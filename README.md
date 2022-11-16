@@ -5,7 +5,7 @@
 ## Features
 
 - Browse Unicode characters by block or script (including script extensions), in grid view or list view
-- Characters are color coded by general category, and characters in a script is divided by block
+- Characters are color coded by general category, and characters in a script are divided by block
 - Double click on a character to insert it into the text editor
 - Normalize texts, change casing, and see the code point breakdown with the text editor
 - Go to character by hex or decimal value, or search by name (matches full words only)
@@ -31,5 +31,5 @@ The code is quick and dirty, sort of speghetti. There are a number of obvious is
 - No support for name aliases
 - The UI is not responsive. No support for smaller screens.
 - It's a bit slow to start. It loads all data, about 1.6 MB, at once. Though this is less of a problem if you run it locally.
-- It renders all characters in a block or script; no optimizations such as lazy loading or "virtual" rendering. In practice, though, the performance seems acceptable. Firefox seem to handle it particularly well.
-- Poor support for showing ranges in Han, Hangul, and Tangut. It requires an additional click when browsing by script, and it shows the wrong character name. There's no support for Unihan, either. To be fair, for Hangul, it's easy enough to use normalization to convert between precomposed syllables and decompsoed *jamo*, so it's not really an issue.
+- It renders all characters in a block or script; no optimizations such as lazy loading or "virtual" rendering. In practice, though, the performance seems acceptable. Firefox seems to handle it particularly well.
+- Poor support for showing ranges in Han, Hangul, and Tangut. It requires an additional click when browsing by script, and it shows the wrong character name. There's no support for Unihan, either. To be fair, for Hangul, it's easy enough to use normalization to convert between precomposed syllables and decomposed *jamo*, so it's not really an issue.
