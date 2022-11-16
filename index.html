@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light dark">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Runesmith</title>
+<style>
+* {
+    box-sizing: border-box;
+}
+:root {
+    --bg: rgba(0, 0, 0, .035);
+    --active-bg: rgba(0, 0, 0, .07);
+    --border: rgba(0, 0, 0, .125);
+    color-scheme: light dark;
+}
+a:link, a:visited {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+@supports (color-scheme: light dark) {
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --active-bg: rgba(255, 255, 255, .125);
+            --border: rgba(0, 0, 0, .5);
+        }
+        a:link, a:visited {
+            color: lightblue;
+        }
+    }
+}
+body {
+    margin: 0;
+    font: menu;
+    font-family: system-ui, sans-serif;
+}
+input[type="text"], input[type="search"], button, select {
+    display: inline-block;
+    font-size: inherit;
+    font-family: inherit;
+    padding: 6px 12px;
+    border: 0;
+    color: canvastext;
+    background: canvas;
+    appearance: none;
+    border-radius: 6px;
+}
+input[type="text"], input[type="search"] {
+    box-shadow: inset 0 0 0 1px var(--border);
+    padding: 6px 9px;
+}
+input:focus {
+    outline: 0;
+    box-shadow: inset 0 0 0 2px highlight;
+}
+.tabular {
+    font-variant-numeric: tabular-nums;
+}
+.hidden {
+    display: none !important;
+}
+.small {
+    font-size: small;
+}
+.background {
+    background: var(--bg);
+}
+.dim-label {
+    color: graytext;
+}
+.expand {
+    flex: 1 1 auto;
+}
+.middle {
+    vertical-align: middle;
+}
+
+.block p {
+    padding: 12px;
+    background: canvas;
+    margin: 0;
+    border-bottom: 1px solid var(--border);
+    color: graytext;
+    position: sticky;
+    top: 0;
+}
+.block ul {
+    padding: 12px;
+    margin: 0;
+    margin-left: -3px;
+    cursor: default;
+}
+.block li {
+    display: inline-block;
+    vertical-align: top;
+    width: 42pt;
+    height: 42pt;
+    line-height: 42pt;
+    font-size: 22pt;
+    text-align: center;
+    overflow: hidden;
+    margin: 3px;
+    border-radius: 6px;
+}
+.block li:focus {
+    outline: 0;
+    box-shadow: inset 0 0 0 2px canvastext;
+}
+
+.list-view .block ul {
+    margin: -6px 0;
+}
+.list-view .block li {
+    display: flex;
+    width: 100%;
+    height: 32pt;
+    line-height: 32pt;
+    font-size: 18pt;
+    align-items: stretch;
+    margin: 6px 0;
+}
+.list-view .block li span {
+    flex: 0 0 32pt;
+    overflow: hidden;
+    border-right: 1px solid var(--border);
+}
+.list-view .block li:after {
+    content: attr(data-name);
+    padding: 12px;
+    font: menu;
+    background: rgba(255, 255, 255, .25);
+    flex: 1 1;
+    text-align: start;
+    display: flex;
+    align-items: center;
+}
+@supports (color-scheme: light dark) {
+    @media (prefers-color-scheme: dark) {
+        .list-view .block li:after {
+            background: rgba(0, 0, 0, .25);
+        }
+    }
+}
+
+#container {
+    display: flex;
+    height: 100vh;
+}
+#pane1 {
+    flex: 0 0 200px;
+    border-right: 1px solid var(--border);
+}
+#pane2 {
+    flex: 1 1 auto;
+    border-right: 1px solid var(--border);
+}
+#pane3 {
+    flex: 0 0 350px;
+}
+
+#pane2 {
+    display: flex;
+    flex-direction: column;
+}
+#pane2 h2 {
+    margin: 12px;
+    margin-bottom: 0;
+    font-weight: 900;
+    font-size: 1.8em;
+}
+#chars-container {
+    overflow-y: scroll;
+    background: canvas;
+    color: canvastext;
+}
+#char-info {
+    border-top: 1px solid var(--border);
+    padding: 12px;
+    display: flex;
+    align-items: center;
+}
+
+#pane1 {
+    display: flex;
+    flex-direction: column;
+}
+#scripts-container, #blocks-container {
+    overflow-y: scroll;
+}
+#pane1 ul {
+    margin: 0;
+    padding: 6px;
+}
+#pane1 li {
+    display: block;
+}
+#pane1 a {
+    color: currentcolor;
+    text-decoration: none;
+    display: block;
+    padding: 8px;
+    margin: 2px 0;
+    border-radius: 6px;
+}
+#pane1 a[aria-current], #pane1 a:hover {
+    background: var(--active-bg);
+}
+
+#pane3 {
+    display: flex;
+    flex-direction: column;
+}
+#text-area-container {
+    flex: 1 1 40%;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+}
+#text-area {
+    resize: none;
+    width: 100%;
+    flex: 1 1 auto;
+    border: 0;
+    background: canvas;
+    color: canvastext;
+    font-size: 18pt;
+    font-family: inherit;
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+}
+#text-area:focus {
+    outline: 0;
+}
+.toolbar {
+    border-bottom: 1px solid var(--border);
+    padding: 6px 3px;
+    display: flex;
+    line-height: 24px;
+    flex: 0 0 48px;
+}
+.toolbar > * {
+    margin: 0 3px;
+}
+.toolbar label, .toolbar span {
+    font-size: 1em;
+    padding: 6px;
+    margin: 0;
+}
+.toolbar button {
+    font-weight: bold;
+    background: transparent;
+    text-align: center;
+}
+.toolbar button:hover {
+    background: var(--active-bg);
+}
+#text-info-container {
+    flex: 2 1 60%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+#text-info {
+    overflow-y: scroll;
+    padding: 0 6px;
+}
+#text-info table {
+    width: 100%;
+    margin: 9px 0;
+}
+#text-info td {
+    padding: 3px;
+    font-size: small;
+    vertical-align: top;
+}
+#text-info td:first-child {
+    text-align: center;
+    font-size: 1em;
+}
+#text-info td:last-child {
+    text-align: center;
+}
+
+.label {
+    display: inline-block;
+    font-weight: 700;
+    font-size: x-small;
+    padding: 3px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    vertical-align: middle;
+    background: #eee;
+    color: #000;
+}
+
+.Lu { background: hsl(0, 0%, 88%); color: #000; }
+.Lt { background: hsl(0, 0%, 92%); color: #000; }
+.Lm { background: hsl(0, 0%, 94%); color: #000; }
+.Ll, .Lo { background: hsl(0, 0%, 98%); color: #000; }
+
+.Me { background: hsl(0, 35%, 70%); color: #000; }
+.Mc { background: hsl(0, 35%, 80%); color: #000; }
+.Mn { background: hsl(0, 35%, 90%); color: #000; }
+
+.Sk { background: hsl(220, 50%, 70%); color: #000; }
+.Sm, .Sc { background: hsl(220, 50%, 80%); color: #000; }
+.So { background: hsl(220, 50%, 90%); color: #000; }
+
+.Nl { background: hsl(100, 35%, 65%); color: #000; }
+.No { background: hsl(100, 35%, 75%); color: #000; }
+.Nd { background: hsl(100, 35%, 85%); color: #000; }
+
+.Pc, .Pd, .Ps, .Pe, .Pi, .Pf, .Po { background: hsl(250, 35%, 90%); color: #000; }
+.Zs, .Zl, .Zp { background: hsl(50, 50%, 90%); color: #000; }
+.Cc, .Cf, .Cs, .Co { background: hsl(30, 50%, 90%); color: #000; }
+.Cn { background: hsl(0, 0%, 30%); color: #fff; }
+
+@supports (color-scheme: light dark) {
+    @media (prefers-color-scheme: dark) {
+        .label { background: #444; color: #fff; }
+
+        .Lu { background: hsl(0, 0%, 35%); color: #fff; }
+        .Lt { background: hsl(0, 0%, 30%); color: #fff; }
+        .Lm { background: hsl(0, 0%, 25%); color: #fff; }
+        .Ll, .Lo { background: hsl(0, 0%, 20%); color: #fff; }
+
+        .Me { background: hsl(0, 35%, 45%); color: #fff; }
+        .Mc { background: hsl(0, 35%, 35%); color: #fff; }
+        .Mn { background: hsl(0, 35%, 25%); color: #fff; }
+
+        .Sk { background: hsl(220, 35%, 55%); color: #fff; }
+        .Sm, .Sc { background: hsl(220, 35%, 45%); color: #fff; }
+        .So { background: hsl(220, 35%, 35%); color: #fff; }
+
+        .Nl { background: hsl(100, 35%, 40%); color: #fff; }
+        .No { background: hsl(100, 35%, 30%); color: #fff; }
+        .Nd { background: hsl(100, 35%, 20%); color: #fff; }
+
+        .Pc, .Pd, .Ps, .Pe, .Pi, .Pf, .Po { background: hsl(250, 35%, 35%); color: #fff; }
+        .Zs, .Zl, .Zp { background: hsl(50, 35%, 30%); color: #fff; }
+        .Cc, .Cf, .Cs, .Co { background: hsl(30, 35%, 30%); color: #fff; }
+        .Cn { background: hsl(0, 0%, 80%); color: #000; }
+    }
+}
+
+/*.block li, #text-area, #text-info td:first-child { font-family: serif; }*/
+</style>
+<div id="container">
+    <div id="pane1">
+        <div class="toolbar background">
+            <label><input type="radio" name="list-switcher" data-stack-name="scripts" data-stack-target="scripts-container" checked> Scripts</label>
+            <label><input type="radio" name="list-switcher" data-stack-name="blocks" data-stack-target="blocks-container"> Blocks</label>
+        </div>
+        <div class="toolbar background">
+            <input id="filter-input" style="width: 100%;" type="search" placeholder="Filter…">
+        </div>
+        <div id="scripts-container" class="background expand"></div>
+        <div id="blocks-container" class="background expand"></div>
+    </div>
+    <div id="pane2">
+        <div class="toolbar background">
+            <label><input type="checkbox" id="list-view-toggle">&nbsp;List View</label>
+            <div class="expand"></div>
+            <span class="dim-label">Search by</span>
+            <button onclick="promptSearch()" title="Search by name">Name</button>
+            <button onclick="promptHex()" title="Go to hex">Hex</button>
+            <button onclick="promptDec()" title="Go to decimal">Dec</button>
+        </div>
+        <div id="chars-container" class="expand"></div>
+        <div id="char-info" class="background hidden"></div>
+    </div>
+    <div id="pane3">
+        <div id="text-area-container">
+            <div class="toolbar background">
+                <label class="expand dim-label" for="text-area">Text Buffer</label>
+                <button data-text-action="$clear">Clear</button>
+                <button data-text-action="$copy">Copy</button>
+            </div>
+            <div class="toolbar background">
+                <button data-text-action="nfc" title="Normalization Form C">C</button>
+                <button data-text-action="nfd" title="Normalization Form D">D</button>
+                <button data-text-action="nfkc" title="Normalization Form KC">KC</button>
+                <button data-text-action="nfkd" title="Normalization Form KD">KD</button>
+                <div class="expand"></div>
+                <button data-text-action="upper" title="Upper Case">↑</button>
+                <button data-text-action="lower" title="Lower Case">↓</button>
+            </div>
+            <textarea id="text-area">Example text</textarea>
+        </div>
+        <div id="text-info-container">
+            <div id="text-info" class="expand background"></div>
+        </div>
+    </div>
+</div>
+<script src="dist.js"></script>
