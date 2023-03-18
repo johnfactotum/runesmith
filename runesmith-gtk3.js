@@ -4,6 +4,7 @@ import Gio from 'gi://Gio?version=2.0'
 import GLib from 'gi://GLib?version=2.0'
 import Handy from 'gi://Handy?version=1'
 import WebKit from 'gi://WebKit2?version=4.1'
+import Gdk from 'gi://Gdk'
 
 const appID = 'com.github.johnfactotum.Runesmith'
 GLib.set_prgname(appID)
@@ -19,6 +20,7 @@ application.connect('startup', () => {
 })
 application.connect('activate', () => {
     const webView = new WebKit.WebView()
+    webView.set_background_color(new Gdk.RGBA())
     webView.load_uri(Gio.File.new_for_path(modulePath('index.html')).get_uri())
     const win = new Gtk.ApplicationWindow({
         application,
