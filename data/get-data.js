@@ -2,11 +2,11 @@
 
 const [UnicodeData, Blocks, Scripts, ScriptExtensions, PropertyValueAliases] =
     await Promise.all([
-        'https://www.unicode.org/Public/15.0.0/ucd/UnicodeData.txt',
-        'https://www.unicode.org/Public/15.0.0/ucd/Blocks.txt',
-        'https://www.unicode.org/Public/15.0.0/ucd/Scripts.txt',
-        'https://www.unicode.org/Public/15.0.0/ucd/ScriptExtensions.txt',
-        'https://www.unicode.org/Public/15.0.0/ucd/PropertyValueAliases.txt',
+        'https://www.unicode.org/Public/15.1.0/ucd/UnicodeData.txt',
+        'https://www.unicode.org/Public/15.1.0/ucd/Blocks.txt',
+        'https://www.unicode.org/Public/15.1.0/ucd/Scripts.txt',
+        'https://www.unicode.org/Public/15.1.0/ucd/ScriptExtensions.txt',
+        'https://www.unicode.org/Public/15.1.0/ucd/PropertyValueAliases.txt',
     ].map(url => fetch(url).then(res => res.text())))
 
 const parse = str => str
