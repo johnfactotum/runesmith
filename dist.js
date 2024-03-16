@@ -81,7 +81,7 @@ for (const [range, scriptName] of extendedScripts) {
     }
 }
 
-const groupItemsByBlock_ = items => {
+const groupItemsByBlock = items => {
     const results = []
     let i = -1
     for (const item of items) {
@@ -95,40 +95,14 @@ const groupItemsByBlock_ = items => {
     }
     return results
 }
-const groupItemsByBlock = items => {
-    const n = items[0][0]
-    let i = blockStarts.findLastIndex(([m]) => n >= m)
-    const results = [[blockStarts[i][1], []]]
-    for (const item of items) {
-        const [n] = item
-        if (i === blockStarts.length - 1
-        || blockStarts[i + 1][0] > n) results.at(-1)[1].push(item)
-        else {
-            while (i < blockStarts.length && blockStarts[i][0] < n) i++
-            results.push([blockStarts[i][1], [item]])
-        }
-    }
-    return results
-}
-const diff = (a, b) => {
-    const arr = []
-    for (let i = 0; i < a.length; i++) {
-        if (a[i] === b[i]) continue
-        arr.push([i, a[i], b[i]])
-    }
-    return arr.length
-}
 
 const codePointToScriptName = new Map()
 const byScript = new Map()
-console.time('test')
 for (const [name, script] of Object.entries(scripts)) {
     script.sort((a, b) => a[0] - b[0])
     for (const [n] of script) codePointToScriptName.set(n, name)
-    //console.log(name, diff(JSON.stringify(groupItemsByBlock(script)), JSON.stringify(groupItemsByBlock_(script))))
-    byScript.set(name, [name, groupItemsByBlock_(script)])
+    byScript.set(name, [name, groupItemsByBlock(script)])
 }
-console.timeEnd('test')
 
 /* render characters
 ------------------------------------------------------------------------------*/
